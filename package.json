@@ -1,0 +1,17 @@
+{
+  "name": "x-days-of-code",
+  "version": "1.0.0",
+  "description": "Verify that `Node.js` is successfully installed by running `node -v`. If `Node.js` is not installed, install it.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^12.3.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  }
+}
