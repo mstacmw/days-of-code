@@ -4,11 +4,13 @@
   "description": "Verify that `Node.js` is successfully installed by running `node -v`. If `Node.js` is not installed, install it.",
   "main": "index.js",
   "scripts": {
+    "start": "npx nodemon",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "better-sqlite3": "^7.1.2",
     "discord.js": "^12.3.1"
   },
   "devDependencies": {

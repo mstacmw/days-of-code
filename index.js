@@ -1,12 +1,30 @@
-const Discord = require("discord.js");
+const Discord = require('discord.js');
 const fs = require('fs');
-const { prefix, token } = require("./config.json");
+const { prefix, token } = require('./config.json');
+const Database = require('better-sqlite3');
 
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
 
-client.once("ready", () => {
-  console.log("Ready!");
+// Open database (create if it does not exist).
+const db = new Database('responses.db', { /*verbose: console.log*/ });
+
+// Create tables if they do not exist.
+let stmt = db.prepare('CREATE TABLE IF NOT EXISTS \n' + 
+                      'responses(userid INTEGER NOT NULL, \n' + 
+                      'question INTEGER NOT NULL, \n' +
+                      'response CHAR NOT NULL, \n' +
+                      'PRIMARY KEY (userid, question));');
+let info = stmt.run();
+console.log('[DB] ' + info.changes + ' changes made to responses table.');
+stmt = db.prepare('CREATE TABLE IF NOT EXISTS \n' +
+                  'scores(userid INTEGER PRIMARY KEY NOT NULL, \n' +
+                  'score INTEGER NOT NULL DEFAULT 0);');
+info = stmt.run();
+console.log('[DB] ' + info.changes + ' changes made to scores table.');
+
+client.once('ready', () => {
+  console.log('Ready!');
 });
 
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
@@ -18,7 +36,7 @@ for (const file of commandFiles) {
 	client.commands.set(command.name, command);
 }
 
-client.on("message", (message) => {
+client.on('message', (message) => {
   if (!message.content.startsWith(prefix) || message.author.bot) return;
 
   // Grab the command and args from the command.
@@ -28,10 +46,10 @@ client.on("message", (message) => {
   if (!client.commands.has(command)) return;
 
   try {
-    client.commands.get(command).execute(message, args);
+    client.commands.get(command).execute(message, args, db);
   } catch (error) {
     console.error(error);
-    message.reply('there was an error trying to execute that command!');
+    message.reply('There was an error trying to execute that command!');
   }
 });
 

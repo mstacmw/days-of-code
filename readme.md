@@ -8,7 +8,9 @@ Install discord.js by running `npm install discord.js`.
 
 Add this bot to a server. Instructions can be found [in the discord.js guide](https://discordjs.guide/preparations/adding-your-bot-to-servers.html#bot-invite-links).
 
-It might be helpful to use nodemon when making changes so that the bot is restarted on a file change. Install nodemon as a development dependency by running `npm install --save-dev nodemon` and then start the local installation using `npx nodemon`.
+When first cloning the repository, run `npm install` to install the required dependencies.
+
+To start the bot, run `npm start`.
 
 ## `config.json`
 
