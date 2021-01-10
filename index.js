@@ -10,18 +10,23 @@ client.commands = new Discord.Collection();
 const db = new Database('responses.db', { /*verbose: console.log*/ });
 
 // Create tables if they do not exist.
-let stmt = db.prepare('CREATE TABLE IF NOT EXISTS \n' + 
-                      'responses(userid INTEGER NOT NULL, \n' + 
+stmt = db.prepare('CREATE TABLE IF NOT EXISTS \n' +
+                      'responses(userid VARCHAR NOT NULL, \n' +
                       'question INTEGER NOT NULL, \n' +
                       'response CHAR NOT NULL, \n' +
                       'PRIMARY KEY (userid, question));');
 let info = stmt.run();
 console.log('[DB] ' + info.changes + ' changes made to responses table.');
 stmt = db.prepare('CREATE TABLE IF NOT EXISTS \n' +
-                  'scores(userid INTEGER PRIMARY KEY NOT NULL, \n' +
+                  'scores(userid VARCHAR PRIMARY KEY NOT NULL, \n' +
                   'score INTEGER NOT NULL DEFAULT 0);');
 info = stmt.run();
 console.log('[DB] ' + info.changes + ' changes made to scores table.');
+stmt = db.prepare('CREATE TABLE IF NOT EXISTS \n' +
+                  'usernames(userid VARCHAR PRIMARY KEY NOT NULL, \n' +
+                  'name VARCHAR(32) NOT NULL);');
+info = stmt.run();
+console.log('[DB] ' + info.changes + ' changes made to usernames table.');
 
 client.once('ready', () => {
   console.log('Ready!');

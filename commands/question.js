@@ -2,7 +2,7 @@ const fs = require('fs');
 const { start } = require('../config.json');
 
 const startDate = new Date(start);
-const ptsPerQuestion = 1;   // Constant score for all questions
+const ptsPerQuestion = 1;   // constant score for all questions
 
 // Hard-coded unicode alphabet. To do this dynamically, research surrogate pairs.
 // For example, the surrogate pair for unicode A is \uD83C\uDDE6.
@@ -76,6 +76,15 @@ module.exports = {
                             stmt = db.prepare(`INSERT INTO scores(userid) VALUES (${message.author.id});`);
                             let info = stmt.run();
                             console.log('[DB] ' + info.changes + ' changes made to scores table.');
+                        }
+
+                        // Ensure the user's nickname is stored in the database.
+                        stmt = db.prepare(`SELECT * FROM usernames WHERE userid=${message.author.id};`);
+                        if(stmt.get() === undefined) {
+                            // Add username to usernames table.
+                            stmt = db.prepare(`INSERT INTO usernames VALUES (${message.author.id}, \'${message.author.username.toString()}\');`);
+                            let info = stmt.run();
+                            console.log('[DB] ' + info.changes + ' changes made to usernames table.');
                         }
 
                         // Compare attempt to correct answer using index values.
