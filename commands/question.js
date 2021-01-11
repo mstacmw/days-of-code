@@ -1,4 +1,6 @@
+const Discord = require('discord.js');
 const fs = require('fs');
+const { options } = require('joi');
 const { start } = require('../config.json');
 
 const startDate = new Date(start);
@@ -19,42 +21,52 @@ module.exports = {
         // Convert difference from milliseconds to days.
         elapsedDays = Math.floor((now - startDate)/(1000*60*60*24));
 
+        let questionEmbed = new Discord.MessageEmbed()
+            .setColor('#2292CF')
+            .setTitle('Day ' + (elapsedDays+1).toString())
+
         // Check if start date has occurred.
         if(now < startDate)
         {
-            message.channel.send('Woah, the event hasn\'t started yet!\n\Check back after ' + 
-                            startDate.toLocaleDateString('en-US', 
-                            { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' , hour: 'numeric', minute: 'numeric' }) + '.');
+            questionEmbed.setTitle('Error')
+                    .setDescription('Woah, the event hasn\'t started yet!\n' +
+                            'Check back after ' + startDate.toLocaleDateString('en-US', 
+                            { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' , hour: 'numeric', minute: 'numeric' }) + '.')
+                    .setTimestamp();
+            message.channel.send(questionEmbed);
         } // Check if all questions have been cycled through.
         else if(elapsedDays > trivia.questions.length)
         {
-            message.channel.send('Woah, the event ended!\nIf you think this is a mistake, please contact an Officer.');
+            questionEmbed.setTitle('Error')
+                    .setDescription('Woah, the event ended!\nIf you think this is a mistake, please contact an Officer.')
+                    .setTimestamp();
+            message.channel.send(questionEmbed);
         }
         else
         {
-            // Check if user has already answered the question for the day.
-            let stmt = db.prepare(`SELECT * FROM responses WHERE userid=${message.author.id} AND question=${elapsedDays};`);
-            let responseRow = stmt.get();
-            if(responseRow !== undefined) {
-                optionStr = '';
-                for(option in trivia.questions[elapsedDays].options)
-                {
-                    optionStr += '\n' + trivia.questions[elapsedDays].options[option]
-                }
-                message.channel.send('It looks like you have already answered the question for day ' + (elapsedDays+1).toString() + '!\n' +
-                                    'You answered ' + unicodeAlphabet[responseRow.response] + ' for the following question:\n' +
-                                    trivia.questions[elapsedDays].question + optionStr);
+            let fullQuestion = 'Today\'s question is:\n\n' + trivia.questions[elapsedDays].question;
+            let options = '';
+            for(option in trivia.questions[elapsedDays].options)
+            {
+                options += '\n' + trivia.questions[elapsedDays].options[option]
             }
-            else { // Fetch the question for the day. Indexing is based off of the number of whole days since the start date.
-                // Display question of the day.
-                str = 'The question for day ' + (elapsedDays+1).toString() + ' is:\n' + trivia.questions[elapsedDays].question;
-                // Send the message, but only add reactions if the command was sent in a direct message.
-                if(message.guild === null) {
-                    for(option in trivia.questions[elapsedDays].options)
-                    {
-                        str += '\n' + trivia.questions[elapsedDays].options[option]
-                    }
-                    message.channel.send(str).then(async sentMessage => {
+            // Send the message, but only add reactions if the command was sent in a direct message.
+            if(message.guild === null) {
+                // Check if user has already answered the question for the day.
+                let stmt = db.prepare(`SELECT * FROM responses WHERE userid=${message.author.id} AND question=${elapsedDays};`);
+                let responseRow = stmt.get();
+                if(responseRow !== undefined) {
+                    questionEmbed.setTitle('Error')
+                            .setDescription('It looks like you have already answered the question for day ' + (elapsedDays+1).toString() + '!\n' +
+                                            'You answered ' + unicodeAlphabet[responseRow.response] + ' for the following question:\n\n' +
+                                            trivia.questions[elapsedDays].question + options)
+                            .setTimestamp();
+                    message.channel.send(questionEmbed);
+                }
+                else { // If the user hasn't answered the question for the day.
+                    fullQuestion += options;
+                    questionEmbed.setDescription(fullQuestion);
+                    message.channel.send(questionEmbed).then(async sentMessage => {
                         // React to the sent message with alphabetical emojis.
                         // Using async/await forces the reactions to consistently happen in order.
                         try {
@@ -112,7 +124,7 @@ module.exports = {
                                 info = stmt.run();
                                 console.log('[DB] ' + info.changes + ' changes made to scores table.');
 
-                                sentMessage.channel.send('That\'s correct!\n Your score is now ' + score + '.');
+                                sentMessage.channel.send('That\'s correct!\nYour score is now: **' + score + '**');
                             }
                             else {
                                 sentMessage.channel.send('Sorry, that\'s incorrect.');
@@ -121,10 +133,10 @@ module.exports = {
                         .catch(console.error);
                     });
                 }
-                else {
-                    str += '\nAsk me this in a DM to answer!'
-                    message.channel.send(str);
-                }
+            }
+            else {
+                questionEmbed.setDescription(fullQuestion + '\n\nAsk me this in a DM to answer!');
+                message.channel.send(questionEmbed);
             }
         }
 	},
