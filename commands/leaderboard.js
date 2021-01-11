@@ -5,6 +5,11 @@ module.exports = {
 	name: 'leaderboard',
 	description: 'Displays the leaderboard. The highest ' + topToDisplay.toString() + ' scores are displayed.',
 	execute(message, args, db) {
+        let embed = new Discord.MessageEmbed()
+                .setColor('#2292CF')
+                .setTitle('Top ' + topToDisplay + ' Scores')
+                .setTimestamp();
+
         stmt = db.prepare('SELECT * FROM scores;');
         rows = stmt.all();
         // Sort entries in ascending order by score.
@@ -12,7 +17,7 @@ module.exports = {
 
         // Check if there is any data to present on the leaderboard.
         if(rows.length < 1) {
-            message.channel.send('No participants yet!');
+            embed.setDescription('No participants yet!');
         }
         else {
             let usernames = '';
@@ -36,16 +41,12 @@ module.exports = {
                     placeScore = rows[index].score;
                 }
             }
-            message.channel.send(new Discord.MessageEmbed()
-                .setColor('#2292CF')
-                .setTitle('Top ' + topToDisplay + ' Scores')
-                .setThumbnail('https://i.imgur.com/wSTFkRM.png')
+            embed.setThumbnail('https://i.imgur.com/wSTFkRM.png')
                 .addFields(
                     { name: 'Username', value: usernames, inline: true },
                     { name: 'Score', value: scores, inline: true }
-                )
-                .setTimestamp()
-            );
+                );
         }
+        message.channel.send(embed);
 	},
 };
