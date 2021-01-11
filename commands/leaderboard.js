@@ -1,3 +1,4 @@
+const Discord = require('discord.js');
 const topToDisplay = 3;
 
 module.exports = {
@@ -14,8 +15,10 @@ module.exports = {
             message.channel.send('No participants yet!');
         }
         else {
-            // Send the top three scores including ties.
-            let topScores = '**--- Top ' + topToDisplay + ' Scores ---**';
+            let usernames = '';
+            let scores = '';
+
+            // Find the top three scores including ties.
             let place = 1;
             let placeScore = rows[0].score; // first score to send
             let index = 0;
@@ -24,7 +27,8 @@ module.exports = {
                 while(index < rows.length && rows[index].score === placeScore) {
                     // Retrieve username from database to display with score.
                     let stmt = db.prepare(`SELECT name FROM usernames WHERE userid=${rows[index].userid};`);
-                    topScores += '\n' + stmt.get().name.toString() + '\t' + rows[index].score;
+                    usernames += stmt.get().name.toString() + '\n';
+                    scores += rows[index].score.toString() + '\n';
                     index += 1;
                 }
                 place += 1;
@@ -32,7 +36,16 @@ module.exports = {
                     placeScore = rows[index].score;
                 }
             }
-            message.channel.send(topScores);
+            message.channel.send(new Discord.MessageEmbed()
+                .setColor('#2292CF')
+                .setTitle('Top ' + topToDisplay + ' Scores')
+                .setThumbnail('https://i.imgur.com/wSTFkRM.png')
+                .addFields(
+                    { name: 'Username', value: usernames, inline: true },
+                    { name: 'Score', value: scores, inline: true }
+                )
+                .setTimestamp()
+            );
         }
 	},
 };
