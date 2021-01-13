@@ -54,7 +54,7 @@ client.on('message', (message) => {
     client.commands.get(command).execute(message, args, db);
   } catch (error) {
     console.error(error);
-    message.reply('There was an error trying to execute that command!');
+    message.reply('There was an error trying to execute that command!\nPlease contact an officer.');
   }
 });
 
