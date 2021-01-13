@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const { embedColor, prefix } = require('../config.json');
+const { embedColor, leaderboardImage, prefix } = require('../config.json');
 const topToDisplay = 3;
 
 module.exports = {
@@ -45,7 +45,7 @@ module.exports = {
                     placeScore = rows[index].score;
                 }
             }
-            embed.setThumbnail('https://i.imgur.com/wSTFkRM.png')
+            embed.setThumbnail(leaderboardImage)
                 .addFields(
                     { name: 'Username', value: usernames, inline: true },
                     { name: 'Score', value: scores, inline: true }

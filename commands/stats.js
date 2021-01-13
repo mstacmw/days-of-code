@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const fs = require('fs');
-const { adminChannel, adminRole, embedColor, prefix, start } = require("../config.json");
+const { adminChannel, adminRole, embedColor, leaderboardImage, prefix, start } = require("../config.json");
 const trivia = JSON.parse(fs.readFileSync('./questions.json'));
 
 module.exports = {
@@ -35,6 +35,8 @@ module.exports = {
             statistics['Admin Channel'] = adminChannel;
 
             statistics['Admin Role'] = adminRole;
+
+            statistics['Leaderboard Image'] = leaderboardImage;
 
             stmt = db.prepare(`SELECT userid FROM usernames;`);
             statistics['Number of Participants'] = stmt.all().length;
