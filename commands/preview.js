@@ -51,15 +51,22 @@ module.exports = {
                 message.channel.send(embed.setTitle('Error').setDescription('Expecting 1 or 2 arguments with command.'));
             }
             else {
-                // Grab the arguments.
+                // Grab the arguments. Note: parseInt works if the argument isn't an integer.
                 let startIndex = parseInt(args[0]) - 1;
                 let endIndex = startIndex;
                 if(args.length > 1) {
                     endIndex = parseInt(args[1]) - 1;
                 }
                 
-                // Check bounds for arguments.
-                if(startIndex < 0 || startIndex >= trivia.questions.length) {
+                // Check for valid arguments.
+                let re = /\d+/;
+                if(!re.test(args[0])) {
+                    message.channel.send(embed.setDescription('1st argument is invalid. Argument must be an integer.'));
+                }
+                else if(args.length > 1 && !re.test(args[1])) {
+                    message.channel.send(embed.setDescription('2nd argument is invalid. Argument must be an integer.'));
+                } // Check bounds of arguments.
+                else if(startIndex < 0 || startIndex >= trivia.questions.length) {
                     message.channel.send(embed.setDescription('1st argument is invalid. Argument must be between 1 and ' + trivia.questions.length + '.'));
                 }
                 else if(endIndex < 0 || endIndex >= trivia.questions.length) {
