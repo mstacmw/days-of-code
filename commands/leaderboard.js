@@ -1,12 +1,16 @@
 const Discord = require('discord.js');
+const { embedColor, prefix } = require('../config.json');
 const topToDisplay = 3;
 
 module.exports = {
 	name: 'leaderboard',
+    elevated: false,
+    usage: prefix + 'leaderboard',
+    brief: 'Displays the leaderboard. The highest ' + topToDisplay.toString() + ' scores are displayed.',
 	description: 'Displays the leaderboard. The highest ' + topToDisplay.toString() + ' scores are displayed.',
 	execute(message, args, db) {
         let embed = new Discord.MessageEmbed()
-                .setColor('#2292CF')
+                .setColor(embedColor)
                 .setTitle('Top ' + topToDisplay + ' Scores')
                 .setTimestamp();
 

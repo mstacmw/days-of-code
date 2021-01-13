@@ -22,6 +22,7 @@ You need to create your own `config.json` file. It should be in the following fo
   "token": "<token>",
   "start": "<start date>",
   "adminRole": "Officers",
-  "adminChannel": "officers"
+  "adminChannel": "officers",
+  "embedColor": "#2292CF"
 }
 ```

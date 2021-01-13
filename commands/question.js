@@ -1,7 +1,7 @@
 const Utilities = require('../utilities.js');
 
 const fs = require('fs');
-const { start } = require('../config.json');
+const { prefix, start } = require('../config.json');
 
 const startDate = new Date(start);
 const ptsPerQuestion = 1;   // constant score for all questions
@@ -10,7 +10,10 @@ var trivia = JSON.parse(fs.readFileSync('./questions.json'));
 
 module.exports = {
 	name: 'question',
-	description: 'Presents the question for the day.',
+    elevated: false,
+    usage: prefix + 'question',
+    brief: 'Presents the question for the day.',
+    description: 'Presents the question for the day. You can only respond to the question in a DM.',
 	execute(message, args, db) {
         now = new Date();
 

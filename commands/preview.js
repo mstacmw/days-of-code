@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const Utilities = require('../utilities.js');
 const fs = require('fs');
-const { adminRole, adminChannel } = require('../config.json');
+const { adminRole, adminChannel, embedColor, prefix } = require('../config.json');
 
 const maxPreviewCount = 10; // needs to be considered so the rate limit is not exceeded
 var trivia = JSON.parse(fs.readFileSync('./questions.json'));
@@ -13,7 +13,7 @@ function generatePreview(questionIndex) {
         // Check if more options are used than Utilities is prepared for.
         if(option >= Utilities.unicodeAlphabet.length) {
             return Utilities.generateQuestionEmbed(
-                    'Day ' + (questionIndex+1).toString() + ' with ERROR on next option',
+                    'Day ' + (questionIndex+1).toString() + ' with ERROR: too many options',
                     fullQuestion + '\n\nCheck that Utilities is capable of handling that many options!')
                 .setColor('#FF0000');
         }
@@ -26,10 +26,18 @@ function generatePreview(questionIndex) {
 
 module.exports = {
 	name: 'preview',
-	description: 'Elevated command to preview question embeds. It is intended that this is used to check for grammatical and content issues within the questions.',
+    elevated: true,
+    usage: prefix + 'preview firstDayNumber [lastDayNumber]',
+    brief: 'Preview question embeds from question file.',
+    description: 'Preview question embeds from question file. \n' +
+                '`firstDayNumber` should be an integer of the first day\'s question to preview. If no second argument is provided, then only this day\'s question is previewed. \n' +
+                '`lastDayNumber` is an optional argument and should be an integer of the last day\'s question to preview. \n' +
+                'If a previewed question has a problem being displayed, it will be indicated with a red color. ' +
+                'In order to avoid being rate limited by Discord, a range of up to ' + maxPreviewCount + ' is permitted. ' +
+                '\nThis command is intended to be used to check for grammatical and content issues within the questions.',
 	execute(message, args, db) {
         let embed = new Discord.MessageEmbed()
-                .setColor('#2292CF')
+                .setColor(embedColor)
                 .setTitle('Error')
                 .setDescription('This command will not work here!\n' +
                                 'Try using this command in the ACM-W server\'s `#' + adminChannel + '` channel.\n' +
