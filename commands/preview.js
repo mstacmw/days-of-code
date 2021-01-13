@@ -4,7 +4,7 @@ const fs = require('fs');
 const { adminRole, adminChannel, embedColor, prefix } = require('../config.json');
 
 const maxPreviewCount = 10; // needs to be considered so the rate limit is not exceeded
-var trivia = JSON.parse(fs.readFileSync('./questions.json'));
+let trivia = JSON.parse(fs.readFileSync('./questions.json'));
 
 function generatePreview(questionIndex) {
     let fullQuestion = 'Today\'s question is:\n\n' + trivia.questions[questionIndex].question;                                

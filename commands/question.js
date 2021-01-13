@@ -6,7 +6,7 @@ const { prefix, start } = require('../config.json');
 const startDate = new Date(start);
 const ptsPerQuestion = 1;   // constant score for all questions
 
-var trivia = JSON.parse(fs.readFileSync('./questions.json'));
+let trivia = JSON.parse(fs.readFileSync('./questions.json'));
 
 module.exports = {
 	name: 'question',
