@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const fs = require('fs');
 const { adminChannel, adminRole, embedColor, leaderboardImage, prefix, start } = require("../config.json");
+const Utilities = require('../utilities');
 const trivia = JSON.parse(fs.readFileSync('./questions.json'));
 
 module.exports = {
@@ -24,13 +25,17 @@ module.exports = {
             let statistics = {};
             let description = '';
 
+            statistics['Websocket heartbeat'] = message.client.ws.ping + 'ms';
+
             startDate = new Date(start);
             statistics['Start Date'] = startDate.toString();
 
             statistics['Number of Questions'] = trivia.questions.length;
 
-            endDate = new Date(startDate.getTime() + (trivia.questions.length*1000*60*60*24));
+            endDate = new Date(startDate.getTime() + (trivia.questions.length*Utilities.questionInterval));
             statistics['Calculated End Date'] = endDate.toString();
+
+            statistics['Interval between questions'] = Utilities.questionInterval + 'ms'
 
             statistics['Admin Channel'] = adminChannel;
 

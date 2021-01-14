@@ -18,7 +18,7 @@ module.exports = {
         now = new Date();
 
         // Convert difference from milliseconds to days.
-        elapsedDays = Math.floor((now - startDate)/(1000*60*60*24));
+        elapsedDays = Math.floor((now - startDate)/Utilities.questionInterval);
 
         // Check if start date has occurred.
         if(now < startDate)

@@ -7,6 +7,7 @@ const unicodeAlphabet = ['🇦', '🇧', '🇨', '🇩', '🇪', '🇫', '🇬']
 
 module.exports = {
     unicodeAlphabet: unicodeAlphabet,
+    questionInterval: 1000*60*60*24, // in ms
     generateQuestionEmbed(title, description) {
         return new Discord.MessageEmbed()
                 .setColor(embedColor)
