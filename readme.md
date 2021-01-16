@@ -23,6 +23,7 @@ You need to create your own `config.json` file. It should be in the following fo
   "start": "<start date>",
   "adminRole": "Officers",
   "adminChannel": "officers",
+  "questionChannel": "general",
   "embedColor": "#2292CF",
   "leaderboardImage": "https://cdn.mstacm.org/static/acm-w.png"
 }
