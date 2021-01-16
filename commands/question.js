@@ -82,55 +82,77 @@ module.exports = {
                         const filter = (reaction, user) => {
                             return user.id === message.author.id;
                         };
+                        // Get the time left for the user to answer today's question.
+                        now = new Date();
+                        let timeLeft = Utilities.questionInterval - ((now - (startDate)) % Utilities.questionInterval);
                         // Wait for first and only first reaction to message.
-                        sentMessage.awaitReactions(filter, { max: 1 })
+                        sentMessage.awaitReactions(filter, { max: 1, time: timeLeft, errors: ['time'] })
                         .then(collected => {
                             // Collected is a Collection (like a Map) with ONE element because max is set to one attempt
                             // This element has key: emoji (as type String) and value: Object (as type MessageReaction)
                             answerIndex = trivia.questions[elapsedDays].answer.toString().toUpperCase().charCodeAt(0) - "A".charCodeAt(0);
                             responseIndex = Utilities.unicodeAlphabet.indexOf(collected.firstKey());
 
-                            // Add user's response to database.
-                            stmt = db.prepare(`INSERT INTO responses VALUES (${message.author.id}, ${elapsedDays}, ${responseIndex});`);
-                            info = stmt.run();
-                            console.log('[DB] ' + info.changes + ' changes made to responses table.');
-
-                            // If this is user's first answered question, add them to the scores table.
-                            stmt = db.prepare(`SELECT * FROM scores WHERE userid=${message.author.id};`);
-                            if(stmt.get() === undefined) {
-                                // Add user to scores table.
-                                stmt = db.prepare(`INSERT INTO scores(userid) VALUES (${message.author.id});`);
-                                let info = stmt.run();
-                                console.log('[DB] ' + info.changes + ' changes made to scores table.');
-                            }
-
-                            // Ensure the user's nickname is stored in the database.
-                            stmt = db.prepare(`SELECT * FROM usernames WHERE userid=${message.author.id};`);
-                            if(stmt.get() === undefined) {
-                                // Add username to usernames table.
-                                stmt = db.prepare(`INSERT INTO usernames VALUES (${message.author.id}, \'${message.author.username.toString()}\');`);
-                                let info = stmt.run();
-                                console.log('[DB] ' + info.changes + ' changes made to usernames table.');
-                            }
-
-                            // Compare attempt to correct answer using index values.
-                            if(responseIndex === answerIndex) {
-                                // Get the user's current score.
-                                stmt = db.prepare(`SELECT score FROM scores WHERE userid=${message.author.id};`);
-                                let score = stmt.get().score;
-                                score += ptsPerQuestion;
-                                // Update user's score in database.
-                                stmt = db.prepare(`UPDATE scores SET score=${score} WHERE userid=${message.author.id};`);
-                                info = stmt.run();
-                                console.log('[DB] ' + info.changes + ' changes made to scores table.');
-
-                                sentMessage.channel.send('That\'s correct!\nYour score is now: **' + score + '**');
+                            // If user has already responded to this question, don't process the response.
+                            // This can happen here if this command is called more than once without an attempt to answer,
+                            // then two messages have been sent and awaiting reactions as an answer.
+                            let stmt = db.prepare(`SELECT * FROM responses WHERE userid=${message.author.id} AND question=${elapsedDays};`);
+                            let responseRow = stmt.get();
+                            if(responseRow !== undefined) {
+                                message.channel.send(
+                                    Utilities.generateQuestionEmbed('Error',
+                                                        'It looks like you have already answered the question for day ' +
+                                                        (elapsedDays+1).toString() + '!\n' + 'You answered ' +
+                                                        Utilities.unicodeAlphabet[responseRow.response] + ' for the following question:\n\n' +
+                                                        trivia.questions[elapsedDays].question + options)
+                                        .setTimestamp()
+                                );
                             }
                             else {
-                                sentMessage.channel.send('Sorry, that\'s incorrect.');
+                                // Add user's response to database.
+                                stmt = db.prepare(`INSERT INTO responses VALUES (${message.author.id}, ${elapsedDays}, ${responseIndex});`);
+                                info = stmt.run();
+                                console.log('[DB] ' + info.changes + ' changes made to responses table.');
+
+                                // If this is user's first answered question, add them to the scores table.
+                                stmt = db.prepare(`SELECT * FROM scores WHERE userid=${message.author.id};`);
+                                if(stmt.get() === undefined) {
+                                    // Add user to scores table.
+                                    stmt = db.prepare(`INSERT INTO scores(userid) VALUES (${message.author.id});`);
+                                    let info = stmt.run();
+                                    console.log('[DB] ' + info.changes + ' changes made to scores table.');
+                                }
+
+                                // Ensure the user's nickname is stored in the database.
+                                stmt = db.prepare(`SELECT * FROM usernames WHERE userid=${message.author.id};`);
+                                if(stmt.get() === undefined) {
+                                    // Add username to usernames table.
+                                    stmt = db.prepare(`INSERT INTO usernames VALUES (${message.author.id}, \'${message.author.username.toString()}\');`);
+                                    let info = stmt.run();
+                                    console.log('[DB] ' + info.changes + ' changes made to usernames table.');
+                                }
+
+                                // Compare attempt to correct answer using index values.
+                                if(responseIndex === answerIndex) {
+                                    // Get the user's current score.
+                                    stmt = db.prepare(`SELECT score FROM scores WHERE userid=${message.author.id};`);
+                                    let score = stmt.get().score;
+                                    score += ptsPerQuestion;
+                                    // Update user's score in database.
+                                    stmt = db.prepare(`UPDATE scores SET score=${score} WHERE userid=${message.author.id};`);
+                                    info = stmt.run();
+                                    console.log('[DB] ' + info.changes + ' changes made to scores table.');
+
+                                    sentMessage.channel.send('That\'s correct!\nYour score is now: **' + score + '**');
+                                }
+                                else {
+                                    sentMessage.channel.send('Sorry, your answer for day ' + (elapsedDays+1).toString() + ' is incorrect.');
+                                }
                             }
                         })
-                        .catch(console.error);
+                        .catch(collected => {
+                            sentMessage.channel.send('You asked for day ' + (elapsedDays+1).toString() + '\'s question but then did\'nt answer!');
+                        });
                     });
                 }
             }
