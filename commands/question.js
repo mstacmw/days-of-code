@@ -60,13 +60,14 @@ module.exports = {
                                             'It looks like you have already answered the question for day ' +
                                             (elapsedDays+1).toString() + '!\n' + 'You answered ' +
                                             Utilities.unicodeAlphabet[responseRow.response] + ' for the following question:\n\n' +
-                                            trivia.questions[elapsedDays].question + options)
+                                            trivia.questions[elapsedDays].question + options,
+                                            trivia.questions[elapsedDays].image)
                             .setTimestamp()
                     );
                 }
                 else { // If the user hasn't answered the question for the day.
                     fullQuestion += options;
-                    message.channel.send(Utilities.generateQuestionEmbed('Day ' + (elapsedDays+1).toString(), fullQuestion)).then(async sentMessage => {
+                    message.channel.send(Utilities.generateQuestionEmbed('Day ' + (elapsedDays+1).toString(), fullQuestion, trivia.questions[elapsedDays].image)).then(async sentMessage => {
                         // React to the sent message with alphabetical emojis.
                         // Using async/await forces the reactions to consistently happen in order.
                         try {
@@ -104,7 +105,8 @@ module.exports = {
                                                         'It looks like you have already answered the question for day ' +
                                                         (elapsedDays+1).toString() + '!\n' + 'You answered ' +
                                                         Utilities.unicodeAlphabet[responseRow.response] + ' for the following question:\n\n' +
-                                                        trivia.questions[elapsedDays].question + options)
+                                                        trivia.questions[elapsedDays].question + options,
+                                                        trivia.questions[elapsedDays].image)
                                         .setTimestamp()
                                 );
                             }
@@ -157,7 +159,11 @@ module.exports = {
                 }
             }
             else {
-                message.channel.send(Utilities.generateQuestionEmbed('Day ' + (elapsedDays+1).toString(), fullQuestion + '\n\nAsk me this in a DM to answer!'));
+                message.channel.send(Utilities.generateQuestionEmbed(
+                    'Day ' + (elapsedDays+1).toString(),
+                    fullQuestion + '\n\nAsk me this in a DM to answer!',
+                    trivia.questions[elapsedDays].image)
+                );
             }
         }
 	},

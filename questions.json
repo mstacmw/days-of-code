@@ -3,6 +3,7 @@
     [
         {
             "question": "This is the first question",
+            "image": "https://cdn.mstacm.org/static/acm-w.png",
             "options": [
                 "A: Option A", 
                 "B: Option B", 
@@ -16,7 +17,11 @@
             "options": [
                 "A: Option A", 
                 "B: Option B", 
-                "C: Option C"],
+                "C: Option C", 
+                "D: Option D", 
+                "E: Option E", 
+                "F: Option F", 
+                "G: Option G"],
             "answer": ["A"]
         },
         {
@@ -29,6 +34,7 @@
         },
         {
             "question": "This is the fourth question",
+            "image": "https://cdn.mstacm.org/static/acm-w.png",
             "options": [
                 "A: Option A", 
                 "B: Option B", 

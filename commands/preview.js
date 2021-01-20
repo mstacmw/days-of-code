@@ -14,14 +14,15 @@ function generatePreview(questionIndex) {
         if(option >= Utilities.unicodeAlphabet.length) {
             return Utilities.generateQuestionEmbed(
                     'Day ' + (questionIndex+1).toString() + ' with ERROR: too many options',
-                    fullQuestion + '\n\nCheck that Utilities is capable of handling that many options!')
+                    fullQuestion + '\n\nCheck that Utilities is capable of handling that many options!',
+                    trivia.questions[questionIndex].image)
                 .setColor('#FF0000');
         }
         else {
             fullQuestion += '\n' + Utilities.unicodeAlphabet[option] + trivia.questions[questionIndex].options[option].substring(1);
         }
     }
-    return Utilities.generateQuestionEmbed('Day ' + (questionIndex+1).toString(), fullQuestion);
+    return Utilities.generateQuestionEmbed('Day ' + (questionIndex+1).toString(), fullQuestion, trivia.questions[questionIndex].image);
 }
 
 module.exports = {

@@ -20,7 +20,7 @@ function alertQuestion(client, initiator) {
 
         // Send question to different channel.
         questionChannelId = client.channels.cache.find(channel => channel.name === questionChannel).id;
-        client.channels.cache.get(questionChannelId).send(Utilities.generateQuestionEmbed('Day ' + (questionIndex+1).toString(), fullQuestion));
+        client.channels.cache.get(questionChannelId).send(Utilities.generateQuestionEmbed('Day ' + (questionIndex+1).toString(), fullQuestion, trivia.questions[questionIndex].image));
 
         console.log('[+] Scheduled message sent to #' + questionChannel + ' channel at ' + now + '.');
     }

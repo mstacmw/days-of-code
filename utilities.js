@@ -8,10 +8,16 @@ const unicodeAlphabet = ['🇦', '🇧', '🇨', '🇩', '🇪', '🇫', '🇬']
 module.exports = {
     unicodeAlphabet: unicodeAlphabet,
     questionInterval: 1000*60*60*24, // in ms
-    generateQuestionEmbed(title, description) {
-        return new Discord.MessageEmbed()
+    generateQuestionEmbed(title, description, image = undefined) {
+        let embed = new Discord.MessageEmbed()
                 .setColor(embedColor)
                 .setTitle(title)
                 .setDescription(description);
+
+        if(image !== undefined) {
+            embed.setImage(image);
+        }
+
+        return embed;
     }
 };
