@@ -39,7 +39,7 @@ module.exports = {
         }
         else
         {
-            let fullQuestion = 'Today\'s question is:\n\n' + trivia.questions[elapsedDays].question;
+            let fullQuestion = 'Today\'s question is:\n\n' + trivia.questions[elapsedDays].question + '\n';
             let options = '';
             for(option in trivia.questions[elapsedDays].options)
             {

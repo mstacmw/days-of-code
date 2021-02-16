@@ -7,11 +7,11 @@ const trivia = JSON.parse(fs.readFileSync('./questions.json'));
 function alertQuestion(client, initiator) {
     let now = new Date();
     let questionIndex = Math.floor((now - (new Date(start)))/Utilities.questionInterval);
-    
+
     // Check if the event is currently happening.
     if(questionIndex >= 0 && questionIndex < trivia.questions.length) {
         // Prepare question for embed.
-        let fullQuestion = 'The question for today is:\n\n' + trivia.questions[questionIndex].question;                                
+        let fullQuestion = 'The question for today is:\n\n' + trivia.questions[questionIndex].question + '\n';
         for(option in trivia.questions[questionIndex].options)
         {
             fullQuestion += '\n' + Utilities.unicodeAlphabet[option] + trivia.questions[questionIndex].options[option].substring(1);

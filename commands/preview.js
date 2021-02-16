@@ -7,7 +7,7 @@ const maxPreviewCount = 10; // needs to be considered so the rate limit is not e
 let trivia = JSON.parse(fs.readFileSync('./questions.json'));
 
 function generatePreview(questionIndex) {
-    let fullQuestion = 'Today\'s question is:\n\n' + trivia.questions[questionIndex].question;                                
+    let fullQuestion = 'Today\'s question is:\n\n' + trivia.questions[questionIndex].question + '\n';
     for(option in trivia.questions[questionIndex].options)
     {
         // Check if more options are used than Utilities is prepared for.
@@ -58,7 +58,7 @@ module.exports = {
                 if(args.length > 1) {
                     endIndex = parseInt(args[1]) - 1;
                 }
-                
+
                 // Check for valid arguments.
                 let re = /\d+/;
                 if(!re.test(args[0])) {
