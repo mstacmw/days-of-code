@@ -2,3 +2,4 @@ node_modules/
 config.json
 responses.db
 questions.json
+questionsShuffled.json
