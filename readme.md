@@ -6,7 +6,9 @@ Verify that Node.js is successfully installed by running `node -v`. If Node.js i
 
 Install discord.js by running `npm install discord.js`.
 
-Add this bot to a server. Instructions can be found [in the discord.js guide](https://discordjs.guide/preparations/adding-your-bot-to-servers.html#bot-invite-links). The client ID is found in the [Discord Developer Portal](https://discord.com/developers/applications) under `Applications`. It is not necessary that the bot is given any permissions when the invite link is created. In order to use all of the commands, however, it will be necessary that the bot is given an elevated role that is specified in `config.json`.
+To create an instance of this bot on your local machine, you will need to set up the bot application through the [Discord Developer Portal](https://discord.com/developers/applications). Detailed instructions can be found [in the discord.js guide](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot).
+
+Add this bot to a server. Detailed instructions can be found [in the discord.js guide](https://discordjs.guide/preparations/adding-your-bot-to-servers.html#bot-invite-links). The client ID is found in the [Discord Developer Portal](https://discord.com/developers/applications) under `Applications`. It is not necessary that the bot is given any permissions when the invite link is created. In order to use all of the commands, however, it will be necessary that the bot is given an elevated role that is specified in `config.json`.
 
 When first cloning the repository, run `npm install` to install the required dependencies.
 
