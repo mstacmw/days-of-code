@@ -16,11 +16,14 @@ function alertQuestion(client, initiator) {
         {
             fullQuestion += '\n' + Utilities.unicodeAlphabet[option] + trivia.questions[questionIndex].options[option].substring(1);
         }
-        fullQuestion += '\n\nSend me a DM with `' + prefix + 'question` to answer!';
+        fullQuestion += '\n\nReact to get sent the question to answer!';
 
         // Send question to different channel.
         questionChannelId = client.channels.cache.find(channel => channel.name === questionChannel).id;
-        client.channels.cache.get(questionChannelId).send(Utilities.generateQuestionEmbed('Day ' + (questionIndex+1).toString(), fullQuestion, trivia.questions[questionIndex].image));
+        client.channels.cache.get(questionChannelId).send(Utilities.generateQuestionEmbed('Day ' + (questionIndex+1).toString(), fullQuestion, trivia.questions[questionIndex].image))
+            .then(async lastMessage => {
+                lastMessage.react('\:woman_raising_hand:');
+            });
 
         console.log('[+] Scheduled message sent to #' + questionChannel + ' channel at ' + now + '.');
     }
