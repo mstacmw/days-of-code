@@ -1,3 +1,4 @@
+require('../log.js');
 const Utilities = require('../utilities.js');
 
 const fs = require('fs');

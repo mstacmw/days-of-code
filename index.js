@@ -1,5 +1,7 @@
+require('../log.js');
 const Discord = require('discord.js');
-const fs = require('fs');
+//const fs = require('fs');
+//included in log.js
 const { prefix, token } = require('./config.json');
 const Database = require('better-sqlite3');
 
