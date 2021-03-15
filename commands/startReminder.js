@@ -1,5 +1,7 @@
+require('../log.js');
 const Discord = require('discord.js');
-const fs = require('fs');
+//const fs = require('fs');
+// included in log.js
 const { adminChannel, adminRole, embedColor, prefix, start, questionChannel } = require("../config.json");
 const Utilities = require('../utilities');
 const trivia = JSON.parse(fs.readFileSync('./questions.json'));
