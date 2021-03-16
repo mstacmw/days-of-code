@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const fs = require('fs');
-const { prefix, token } = require('./config.json');
+const { prefix, token, questionChannel } = require('./config.json');
 const Database = require('better-sqlite3');
 
 const client = new Discord.Client();
@@ -36,7 +36,7 @@ const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
 
-  // Set a new item in the Collection with the key as the 
+  // Set a new item in the Collection with the key as the
   // command name and the value as the exported module.
 	client.commands.set(command.name, command);
 }
@@ -55,6 +55,35 @@ client.on('message', (message) => {
   } catch (error) {
     console.error(error);
     message.reply('There was an error trying to execute that command!\nPlease contact an officer.');
+  }
+});
+
+// On reaction, send question to users
+client.on('messageReactionAdd', async (reaction, user) => {
+  // Get channel id
+  questionChannelId = client.channels.cache.find(channel => channel.name === questionChannel).id;
+
+  /*
+    if
+    (1) the message is a trivia question AND
+    (2) the message is in the correct channel AND
+    (3) the message reacted to was sent by the bot AND
+    (4) the reaction made is by a user that is not a bot AND
+    (5) client has perms to execute !question
+  */
+  if(reaction.message.embeds[0].title.includes('Day') && questionChannelId === reaction.message.channel.id &&
+  reaction.message.author.bot && !user.bot && client.commands.has('question')) {
+    // Create dummy message object for !question paremeter
+    const message = new Discord.Message()
+
+    // Create DM with user to use for channel property
+    if(user.dmChannel === null) await user.createDM();
+    message.channel = user.dmChannel;
+    message.author = {
+      id: user.id,
+      username: user.username,
+    };
+    client.commands.get('question').execute(message, ['question'], db);
   }
 });
 

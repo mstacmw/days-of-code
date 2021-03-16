@@ -25,7 +25,7 @@ module.exports = {
         {
             message.channel.send(
                 Utilities.generateQuestionEmbed('Error', 'Woah, the event hasn\'t started yet!\n' +
-                            'Check back after ' + startDate.toLocaleDateString('en-US', 
+                            'Check back after ' + startDate.toLocaleDateString('en-US',
                             { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' , hour: 'numeric', minute: 'numeric' }) + '.')
                 .setTimestamp()
             );
@@ -153,7 +153,7 @@ module.exports = {
                             }
                         })
                         .catch(collected => {
-                            sentMessage.channel.send('You asked for day ' + (elapsedDays+1).toString() + '\'s question but then did\'nt answer!');
+                            sentMessage.channel.send('You asked for day ' + (elapsedDays+1).toString() + '\'s question but then didn\'t answer!');
                         });
                     });
                 }
@@ -161,9 +161,12 @@ module.exports = {
             else {
                 message.channel.send(Utilities.generateQuestionEmbed(
                     'Day ' + (elapsedDays+1).toString(),
-                    fullQuestion + '\n\nAsk me this in a DM to answer!',
+                    fullQuestion + '\n\nReact with 🙋‍♀️ to answer in your DMs!',
                     trivia.questions[elapsedDays].image)
-                );
+                )
+                .then(async lastMessage => {
+                    lastMessage.react('🙋‍♀️');
+                });
             }
         }
 	},
