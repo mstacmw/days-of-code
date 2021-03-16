@@ -5,11 +5,15 @@ const Utilities = require('../utilities');
 const trivia = JSON.parse(fs.readFileSync('./questions.json'));
 
 function alertQuestion(client, initiator) {
+	//time of when the start reminder is called
     let now = new Date();
+    //gives you the day in ms
     let questionIndex = Math.floor((now - (new Date(start)))/Utilities.questionInterval);
+    // time of when the event started
+	let startTime = new Date(start)
 
     // Check if the event is currently happening.
-    if(questionIndex >= 0 && questionIndex < trivia.questions.length) {
+    if(startTime && questionIndex < trivia.questions.length) {
         // Prepare question for embed.
         let fullQuestion = 'The question for today is:\n\n' + trivia.questions[questionIndex].question + '\n';
         for(option in trivia.questions[questionIndex].options)
@@ -25,10 +29,10 @@ function alertQuestion(client, initiator) {
                 lastMessage.react('🙋‍♀️');
             });
 
-        console.log('[+] Scheduled message sent to #' + questionChannel + ' channel at ' + now + '.');
+        console.log('[+] Scheduled message sent to #' + questionChannel + ' channel at ' + startTime + '.');
     }
     else {
-        console.log('[-] Interval wanted to send message to ' + questionChannel + ' at ' + now + ' but event isn\'t happening.');
+        console.log('[-] Interval wanted to send message to ' + questionChannel + ' at ' + startTime + ' but event isn\'t happening.');
         // Direct message the user that initiated the interval to inform them of a problem.
         client.users.cache.find(user => user.id === initiator.id).send(
             'A problem occurred with my interval.' +
@@ -71,7 +75,7 @@ module.exports = {
                     .setDescription('Interval set.\nToday\'s question will be sent to `#' +
                                     questionChannel + '` starting now and repeating every ' +
                                     Utilities.questionInterval/(1000*60*60) + ' hours.' +
-                                    '\n\nIf and/or when there is an error with the interval, you will recieve a DM from me.')
+                                    '\n\nIf and/or when there is an error with the interval, you will receive a DM from me.')
             );
         }
         else {
@@ -79,3 +83,5 @@ module.exports = {
         }
 	},
 };
+
+
