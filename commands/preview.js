@@ -18,6 +18,20 @@ function generatePreview(questionIndex) {
                     trivia.questions[questionIndex].image)
                 .setColor('#FF0000');
         }
+	    
+        // Check question formatting with regex
+        let questionFormat = new RegExp('\s*(.*?)[\r\n\s]+');
+        let checkQuestion = String(trivia.questions[questionIndex].question);
+        let questionMatch = questionFormat.match(checkQuestion);
+        console.log(questionMatch);
+        if (questionMatch == false) {
+            return Utilities.generateQuestionEmbed(
+                    'Day ' + (questionIndex+1).toString() + ' with ERROR: wrong format',
+                    fullQuestion + '\n\nCheck the format of your question!',
+                    trivia.questions[questionindex].image)
+                .setColor('#FFC107');
+        }
+	    
         else {
             fullQuestion += '\n' + Utilities.unicodeAlphabet[option] + trivia.questions[questionIndex].options[option].substring(1);
         }
